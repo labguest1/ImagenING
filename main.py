@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+from io import BytesIO
 import json
 from google.cloud import aiplatform
 from google.oauth2 import service_account
@@ -10,19 +11,19 @@ from google.api_core.exceptions import ResourceExhausted
 
 
 # credentials
-def load_credentials(json_key_file):
-    with open(json_key_file) as f:
-        return json.load(f)
+# def load_credentials(json_key_file):
+#     with open(json_key_file) as f:
+#         return json.load(f)
 
 PROJECT_ID = '880058750453'
 LOCATION = 'europe-west4'  
 json_key_file = 'stream-5---fi-nonprod-svc-sgto-7b78037c37f6.json'
 
-credentials_dict = load_credentials(json_key_file)
+# credentials_dict = load_credentials(json_key_file)
 
-credentials = service_account.Credentials.from_service_account_info(credentials_dict)
-aiplatform.init(project=PROJECT_ID, location=LOCATION, credentials=credentials)
-
+# credentials = service_account.Credentials.from_service_account_info(credentials_dict)
+# aiplatform.init(project=PROJECT_ID, location=LOCATION, credentials=credentials)
+vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 # model
 use_fast_model = True 
@@ -41,7 +42,7 @@ with header:
             <h1 style='text-align: center; 
             font-family: Sans-Serif; 
             font-size: 30px; 
-            color: #fa551e;'>
+            color: #ff6200;'>
             The BEST Image Generator EVER
             </h1>
             """, unsafe_allow_html=True)
@@ -98,21 +99,27 @@ with body:
 
             else:
                 success = True
-                image_url = response.image_url
+
+                images = []
+
+                for index in range(len(list(response))):
+                    image_data = response.images[index]._image_bytes
+                    image = Image.open(BytesIO(image_data))
+                    images.append(image)
 
                 img1, img2, img3, img4 = st.columns(4)
                 
                 with img1:
-                    st.image(image_url[0], caption='Image 1', use_column_width=True)
+                    st.image(images[0], caption='Image 1', use_column_width=True)
                 
                 with img2:
-                    st.image(image_url[1], caption='Image 2', use_column_width=True)
+                    st.image(images[1], caption='Image 2', use_column_width=True)
 
                 with img3:
-                    st.image(image_url[2], caption='Image 3', use_column_width=True)
+                    st.image(images[2], caption='Image 3', use_column_width=True)
 
                 with img4:
-                    st.image(image_url[3], caption='Image 4', use_column_width=True)
+                    st.image(images[3], caption='Image 4', use_column_width=True)
 
                 
 

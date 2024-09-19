@@ -7,9 +7,9 @@ import vertexai
 from google.api_core.exceptions import GoogleAPICallError, RetryError, Forbidden
 
 
-def load_credentials(json_key_file):
-    with open(json_key_file) as f:
-        return json.load(f)
+# def load_credentials(json_key_file):
+#     with open(json_key_file) as f:
+#         return json.load(f)
 
 
 json_key_file = 'stream-5---fi-nonprod-svc-sgto-7b78037c37f6.json'
@@ -24,9 +24,12 @@ st.title("Vertex AI Connection Test")
 
 if st.button("Test Connection"):
     try:
-        credentials_dict = load_credentials(json_key_file)
-        credentials = service_account.Credentials.from_service_account_info(credentials_dict)
-        aiplatform.init(project=PROJECT_ID, location=LOCATION, credentials=credentials)
+        # credentials_dict = load_credentials(json_key_file)
+        # credentials = service_account.Credentials.from_service_account_info(credentials_dict)
+        # aiplatform.init(project=PROJECT_ID, location=LOCATION, credentials=credentials)
+        # logger.info("Vertex AI initialized successfully.")
+
+        vertexai.init(project=PROJECT_ID, location=LOCATION)
         logger.info("Vertex AI initialized successfully.")
 
         models = aiplatform.Model.list()

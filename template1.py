@@ -6,7 +6,7 @@ st.markdown("""
             <h1 style='text-align: center; 
             font-family: Sans-Serif; 
             font-size: 30px; 
-            color: #fa551e;'>
+            color: #ff6200;'>
             The BEST Image Generator EVER
             </h1>
             """, unsafe_allow_html=True)
