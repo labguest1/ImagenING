@@ -37,33 +37,35 @@ sub_body2 = st.container()
 
 ### main page header ###
 with header: 
-    st.image('ing_icon/imagin.png', width=600)
+    st.image('ing_icon/imagin.png', width=700)
 
-### button customize ###
+
+### customize button ###
 st.markdown("""
     <style>
-    div.stButton > button:first-child {
-        background-color: #ff6200;
-        color: white;
+    div.stButton > button {
+        background-color: white;
+        color: #ff6200;
         height: 2em;
         width: 6em;
         border-radius:10px;
-        border:1px solid #ff6200;
+        border: 1px solid #ff6200;
         font-size: 25px;
         font-weight: bold;
     }
-    div.stButton > button:first-child:hover {
-        background-color: #ff8533;
+    div.stButton > button:hover {
+        background-color: #ff6200;
         color: white;
-        border:1px solid #ff8533;
+        border: 1px solid #ff6200;
     }
-    div.stButton > button:first-child:active {
+    div.stButton > button:active {
         background-color: white;
-        color: #ff8533;
-        border:1px solid #ff8533;
+        color: #ff6200;
+        border: 1px solid #ff6200;
     }
     </style>
     """, unsafe_allow_html=True)
+
 
 ### animations ### 
 path1 = "animations/spinner.json"
@@ -81,8 +83,7 @@ with body:
     option = st.selectbox('Please select the setting', ['Office', 'Customer', 'Illustration'])
 
     if st.button('Generate Image'):
-        with st_lottie_spinner(spinner_url, reverse=True, speed=1, loop=True, quality='high', height=200, width=200, key='spinner1'):
-
+        with st_lottie_spinner(spinner_url, reverse=True, speed=1, loop=True, quality='high', height=130, width=130, key='spinner1'):
             if option == 'Office':
                 system_prompt = """
                                 Setting:
