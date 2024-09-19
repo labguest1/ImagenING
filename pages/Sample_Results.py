@@ -13,7 +13,7 @@ sub_body6 = st.container()
 with header: 
     st.markdown("""
             <h1 style='text-align: center; 
-            font-family: Times New Roman; 
+            font-family: Arial; 
             font-size: 40px; 
             color: #ff6200;'>
             Our Generated Results!
@@ -25,7 +25,7 @@ with sub_body1:
 
         st.markdown("""
             <h1 style='text-align: center; 
-            font-family: Times New Roman; 
+            font-family: Arial; 
             font-size: 20px; 
             color: #333333;'>
             A friendly orange lion in an office with 2 people
@@ -48,7 +48,7 @@ with sub_body1:
 
         st.markdown("""
             <h1 style='text-align: center; 
-            font-family: Times New Roman; 
+            font-family: Arial; 
             font-size: 20px; 
             color: #333333;'>
             A group of 3 people in the office
@@ -68,7 +68,7 @@ with sub_body1:
 
         st.markdown("""
             <h1 style='text-align: center; 
-            font-family: Times New Roman; 
+            font-family: Arial; 
             font-size: 20px; 
             color: #333333;'>
             A woman and a friendly orange lion, doing the easy seat yoga pose
@@ -91,7 +91,7 @@ with sub_body1:
 
         st.markdown("""
             <h1 style='text-align: center; 
-            font-family: Times New Roman; 
+            font-family: Arial; 
             font-size: 20px; 
             color: #333333;'>
             A woman and a robot interacting
@@ -114,7 +114,7 @@ with sub_body1:
 
         st.markdown("""
             <h1 style='text-align: center; 
-            font-family: Times New Roman; 
+            font-family: Arial; 
             font-size: 20px; 
             color: #333333;'>
             An orange lion in front of an office
@@ -134,7 +134,7 @@ with sub_body1:
 
         st.markdown("""
             <h1 style='text-align: center; 
-            font-family: Times New Roman; 
+            font-family: Arial; 
             font-size: 20px; 
             color: #333333;'>
             Two software developers giving each other a high five, wearing hoodies, energy drinks in the background, headphones around their neck
