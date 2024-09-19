@@ -1,56 +1,74 @@
 import streamlit as st
 from PIL import Image
 from io import BytesIO
-import json
-from google.cloud import aiplatform
-from google.oauth2 import service_account
 import vertexai
 from vertexai.preview.vision_models import ImageGenerationModel
 import time
 from google.api_core.exceptions import ResourceExhausted
 
 
-# credentials
-# def load_credentials(json_key_file):
-#     with open(json_key_file) as f:
-#         return json.load(f)
-
+### project details ###
 PROJECT_ID = '880058750453'
 LOCATION = 'europe-west4'  
-json_key_file = 'stream-5---fi-nonprod-svc-sgto-7b78037c37f6.json'
 
-# credentials_dict = load_credentials(json_key_file)
-
-# credentials = service_account.Credentials.from_service_account_info(credentials_dict)
-# aiplatform.init(project=PROJECT_ID, location=LOCATION, credentials=credentials)
 vertexai.init(project=PROJECT_ID, location=LOCATION)
 
-# model
+
+### load imagen model ###
 use_fast_model = True 
 model = "imagen-3.0-fast-generate-001" if use_fast_model else "imagen-3.0-generate-001"
 generation_model = ImageGenerationModel.from_pretrained(model)
 
 
-# components
+### app page icon ###
+st.set_page_config(
+    page_title="ImagING",
+    page_icon="ing_icon/tab_icon.jpg",
+)
+
+### main page components ###
 header = st.container()
 body = st.container()
+sub_body1 = st.container()
+sub_body2 = st.container()
 
 
-# header
+### main page header ###
 with header: 
     st.markdown("""
             <h1 style='text-align: center; 
-            font-family: Sans-Serif; 
-            font-size: 30px; 
+            font-family: Times New Roman; 
+            font-size: 35px; 
             color: #ff6200;'>
             The BEST Image Generator EVER
             </h1>
             """, unsafe_allow_html=True)
 
-    st.image('imagin.png')
+    st.image('ing_icon/imagin.png', width=600)
+
+### button customize ###
+st.markdown("""
+    <style>
+    div.stButton > button:first-child {
+        background-color: #ff6200;
+        color: white;
+        height: 2em;
+        width: 6em;
+        border-radius:10px;
+        border:1px solid #ff6200;
+        font-size: 25px;
+        font-weight: bold;
+    }
+    div.stButton > button:first-child:hover {
+        background-color: #ff8533;
+        color: white;
+        border:1px solid #ff8533;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 
-# body
+### main page body ###
 with body: 
     user_prompt = st.text_input('Please type in your prompt')
     option = st.selectbox('Please select the setting', ['Office', 'Outdoors'])
@@ -107,19 +125,23 @@ with body:
                     image = Image.open(BytesIO(image_data))
                     images.append(image)
 
-                img1, img2, img3, img4 = st.columns(4)
+                with sub_body1: 
+                    img1, img2 = st.columns(2)
                 
-                with img1:
-                    st.image(images[0], caption='Image 1', use_column_width=True)
-                
-                with img2:
-                    st.image(images[1], caption='Image 2', use_column_width=True)
+                    with img1:
+                        st.image(images[0], caption='Image 1', use_column_width=True)
+                    
+                    with img2:
+                        st.image(images[1], caption='Image 2', use_column_width=True)
 
-                with img3:
-                    st.image(images[2], caption='Image 3', use_column_width=True)
+                with sub_body2: 
+                    img3, img4 = st.columns(2)
 
-                with img4:
-                    st.image(images[3], caption='Image 4', use_column_width=True)
+                    with img3:
+                        st.image(images[2], caption='Image 3', use_column_width=True)
+
+                    with img4:
+                        st.image(images[3], caption='Image 4', use_column_width=True)
 
                 
 
