@@ -7,6 +7,7 @@ from vertexai.preview.vision_models import ImageGenerationModel
 import time
 from google.api_core.exceptions import ResourceExhausted
 from streamlit_lottie import st_lottie_spinner, st_lottie
+from functions import autofill_option_1, autofill_option_2, generate_image
 
 
 ### project details ###
@@ -40,17 +41,27 @@ with header:
     st.image('ing_icon/imagin.png', width=700)
 
 
+### animations ### 
+path1 = "animations/spinner.json"
+with open(path1,"r") as file: 
+    spinner_url = json.load(file) 
+
+path2 = "animations/confetti.json"
+with open(path2,"r") as file2: 
+    confetti_url = json.load(file2) 
+
+
 ### customize button ###
 st.markdown("""
     <style>
     div.stButton > button {
         background-color: white;
         color: #ff6200;
-        height: 2em;
-        width: 6em;
+        height: 3em;
+        width: 10em;
         border-radius:10px;
         border: 1px solid #ff6200;
-        font-size: 25px;
+        font-size: 20px;
         font-weight: bold;
     }
     div.stButton > button:hover {
@@ -67,22 +78,24 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 
-### animations ### 
-path1 = "animations/spinner.json"
-with open(path1,"r") as file: 
-    spinner_url = json.load(file) 
-
-path2 = "animations/confetti.json"
-with open(path2,"r") as file2: 
-    confetti_url = json.load(file2) 
-
-
 ### main page body ###
 with body: 
-    user_prompt = st.text_input('Please type in your prompt')
+    if 'input_text' not in st.session_state:
+        st.session_state.input_text =""
+
+    user_prompt = st.text_input('Please type in your prompt', key='input_text')
+    
+    prompt_button1, prompt_button2 = st.columns(2)
+
+    with prompt_button1:
+        st.button('2 people shaking hands', on_click=autofill_option_1)
+    
+    with prompt_button2:
+        st.button('A friendly lion dancing with people', on_click=autofill_option_2)
+   
     option = st.selectbox('Please select the setting', ['Office', 'Customer', 'Illustration'])
 
-    if st.button('Generate Image'):
+    if st.button('Generate Image', on_click=generate_image):
         with st_lottie_spinner(spinner_url, reverse=True, speed=1, loop=True, quality='high', height=130, width=130, key='spinner1'):
             if option == 'Office':
                 system_prompt = """
