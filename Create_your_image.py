@@ -7,13 +7,12 @@ from vertexai.preview.vision_models import ImageGenerationModel
 import time
 from google.api_core.exceptions import ResourceExhausted
 from streamlit_lottie import st_lottie_spinner, st_lottie
-from functions import autofill_option_1, autofill_option_2
+from functions import autofill_option_1, autofill_option_2, autofill_option_3
 
 
 ### project details ###
 PROJECT_ID = '880058750453'
 LOCATION = 'europe-west4'  
-
 vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 
@@ -23,22 +22,32 @@ model = "imagen-3.0-fast-generate-001" if use_fast_model else "imagen-3.0-genera
 generation_model = ImageGenerationModel.from_pretrained(model)
 
 
-### app page icon ###
+### page configuration ###
 st.set_page_config(
-    page_title="ImagING",
+    page_title="ImagenING",
     page_icon="ing_icon/tab_icon.jpg",
 )
+
+
+### load css style ###
+with open('styles/styles_1.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 
 ### main page components ###
 header = st.container()
 body = st.container()
 sub_body1 = st.container()
 sub_body2 = st.container()
+footer = st.container()
+
+if 'count' not in st.session_state:
+    st.session_state.count = 0
 
 
 ### main page header ###
 with header: 
-    st.image('ing_icon/imagin.png', width=700)
+    st.image('ing_icon/logo.svg', width=700)
 
 
 ### animations ### 
@@ -51,52 +60,35 @@ with open(path2,"r") as file2:
     confetti_url = json.load(file2) 
 
 
-### customize button ###
-st.markdown("""
-    <style>
-    div.stButton > button {
-        background-color: white;
-        color: #ff6200;
-        height: 3em;
-        width: 11em;
-        border-radius:10px;
-        border: 1px solid #ff6200;
-        font-size: 20px;
-        font-weight: bold;
-    }
-    div.stButton > button:hover {
-        background-color: #ff6200;
-        color: white;
-        border: 1px solid #ff6200;
-    }
-    div.stButton > button:active {
-        background-color: white;
-        color: #ff6200;
-        border: 1px solid #ff6200;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-
 ### main page body ###
-with body: 
+with body:
     if 'input_text' not in st.session_state:
         st.session_state.input_text =""
-
-    user_prompt = st.text_input('Please type in your prompt', key='input_text')
+        
+    user_prompt = st.text_input(r"$\textsf{\large Please enter your prompt}$", key='input_text', placeholder='type here')
     
-    prompt_button1, prompt_button2 = st.columns(2)
-
+    ### prompt option buttons ##
+    prompt_button1, prompt_button2, prompt_button3 = st.columns(3)
+    
     with prompt_button1:
         st.button('2 people shaking hands', on_click=autofill_option_1)
-    
+
     with prompt_button2:
         st.button('A friendly orange lion shaking hands with people', on_click=autofill_option_2)
-   
-    option = st.selectbox('Please select the setting', ['Office', 'Customer', 'Illustration'])
 
+    with prompt_button3:
+        st.button('People playing football with an orange lion', on_click=autofill_option_3)
+
+
+    ## settings option ##
+    option = st.selectbox(r"$\textsf{\large Please select the setting}$", ['Office', 'Customer', 'Illustration'])
+
+    ## generate image button ## 
     if st.button('Generate Image'):
+        st.session_state.count += 4
         with st_lottie_spinner(spinner_url, reverse=True, speed=1, loop=True, quality='high', height=130, width=130, key='spinner1'):
+            # pass
+
             if option == 'Office':
                 system_prompt = """
                                 Setting:
@@ -130,7 +122,6 @@ with body:
             prompt = system_prompt + user_prompt
 
             success = False
-
             while not success:
                 try:
                     response = generation_model.generate_images(
@@ -181,8 +172,16 @@ with body:
                                            quality='high', height=200, width=200, key='confetti1')
 
 
-
-
-
+with footer:
+    st.markdown(
+        f"""
+        <div class="bottom-right">
+            <p>Number of images generated today: {st.session_state.count}</p>
+            <p>Total cost of images generated today: {f'{st.session_state.count * 0.16:.2f}'}€</p>
+            <p>Cost per generated image: 0,16€</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
