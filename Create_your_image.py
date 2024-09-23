@@ -1,6 +1,7 @@
 import streamlit as st
 import json
 from PIL import Image
+import re
 from io import BytesIO
 import vertexai
 from vertexai.preview.vision_models import ImageGenerationModel
@@ -35,6 +36,7 @@ st.set_page_config(
 with open("styles/styles_1.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+
 ### define example propmts ###
 example_prompt1 = "2 people shaking hands"
 example_prompt2 = "A friendly orange lion shaking hands with people"
@@ -48,9 +50,12 @@ sub_body1 = st.container()
 sub_body2 = st.container()
 footer = st.container()
 
-if "count" not in st.session_state:
+if 'count' not in st.session_state:
     with open("image_counter.txt", "r") as f:
         st.session_state.count = int(f.read())
+
+if 'easter_egg' not in st.session_state:
+    st.session_state.easter_egg = False
 
 
 ### main page header ###
@@ -63,10 +68,6 @@ path1 = "animations/spinner.json"
 with open(path1, "r") as file:
     spinner_url = json.load(file)
 
-path2 = "animations/confetti.json"
-with open(path2, "r") as file2:
-    confetti_url = json.load(file2)
-
 
 ### main page body ###
 with body:
@@ -78,6 +79,10 @@ with body:
         key="input_text",
         placeholder="type here",
     )
+
+    if re.search(r'(?i)\bhappy\b\s+\blion\b', user_prompt):  
+        st.session_state.easter_egg = True
+
 
     ### prompt option buttons ##
     prompt_button1, prompt_button2, prompt_button3 = st.columns(3)
@@ -93,6 +98,17 @@ with body:
     with prompt_button3:
         st.button(example_prompt3, on_click=autofill_option, args=[example_prompt3])
         format_example_prompt_button(example_prompt3)
+
+
+    ## easter egg ## 
+    lion_placeholder = st.empty()
+
+    if st.session_state.easter_egg:
+        lion_placeholder.markdown("🦁 **You found the secret lion!**")
+        st.image("animations/dancing.gif", width=200)
+    else:
+        lion_placeholder.markdown("")
+
 
     ## settings option ##
     option = st.selectbox(
@@ -116,7 +132,7 @@ with body:
             key="spinner1",
         ):
             # pass
-
+    
             if option == "Office":
                 system_prompt = """
                                 Setting:
@@ -203,17 +219,8 @@ with body:
                             st.image(
                                 images[3], caption="Image 4", use_column_width=True
                             )
-
-                    # st_lottie(
-                    #     confetti_url,
-                    #     reverse=True,
-                    #     speed=1,
-                    #     loop=False,
-                    #     quality="high",
-                    #     height=200,
-                    #     width=200,
-                    #     key="confetti1",
-                    # )
+                    
+                    st.balloons()
 
 
 with footer:
