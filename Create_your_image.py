@@ -7,17 +7,19 @@ from vertexai.preview.vision_models import ImageGenerationModel
 import time
 from google.api_core.exceptions import ResourceExhausted
 from streamlit_lottie import st_lottie_spinner, st_lottie
-from functions import autofill_option_1, autofill_option_2, autofill_option_3
-
+from functions import (
+    autofill_option,
+    format_example_prompt_button,
+)
 
 ### project details ###
-PROJECT_ID = '880058750453'
-LOCATION = 'europe-west4'  
+PROJECT_ID = "880058750453"
+LOCATION = "europe-west4"
 vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 
 ### load imagen model ###
-use_fast_model = True 
+use_fast_model = True
 model = "imagen-3.0-fast-generate-001" if use_fast_model else "imagen-3.0-generate-001"
 generation_model = ImageGenerationModel.from_pretrained(model)
 
@@ -30,8 +32,13 @@ st.set_page_config(
 
 
 ### load css style ###
-with open('styles/styles_1.css') as f:
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+with open("styles/styles_1.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+### define example propmts ###
+example_prompt1 = "2 people shaking hands"
+example_prompt2 = "A friendly orange lion shaking hands with people"
+example_prompt3 = "People playing football with an orange lion"
 
 
 ### main page components ###
@@ -41,70 +48,91 @@ sub_body1 = st.container()
 sub_body2 = st.container()
 footer = st.container()
 
-if 'count' not in st.session_state:
-    st.session_state.count = 0
+if "count" not in st.session_state:
+    with open("image_counter.txt", "r") as f:
+        st.session_state.count = int(f.read())
 
 
 ### main page header ###
-with header: 
-    st.image('ing_icon/logo.svg', width=700)
+with header:
+    st.image("ing_icon/logo.svg", width=700)
 
 
-### animations ### 
+### animations ###
 path1 = "animations/spinner.json"
-with open(path1,"r") as file: 
-    spinner_url = json.load(file) 
+with open(path1, "r") as file:
+    spinner_url = json.load(file)
 
 path2 = "animations/confetti.json"
-with open(path2,"r") as file2: 
-    confetti_url = json.load(file2) 
+with open(path2, "r") as file2:
+    confetti_url = json.load(file2)
 
 
 ### main page body ###
 with body:
-    if 'input_text' not in st.session_state:
-        st.session_state.input_text =""
-        
-    user_prompt = st.text_input(r"$\textsf{\large Please enter your prompt}$", key='input_text', placeholder='type here')
-    
+    if "input_text" not in st.session_state:
+        st.session_state.input_text = ""
+
+    user_prompt = st.text_input(
+        r"$\textsf{\large Please enter your prompt}$",
+        key="input_text",
+        placeholder="type here",
+    )
+
     ### prompt option buttons ##
     prompt_button1, prompt_button2, prompt_button3 = st.columns(3)
-    
+
     with prompt_button1:
-        st.button('2 people shaking hands', on_click=autofill_option_1)
+        st.button(example_prompt1, on_click=autofill_option, args=[example_prompt1])
+        format_example_prompt_button(example_prompt1)
 
     with prompt_button2:
-        st.button('A friendly orange lion shaking hands with people', on_click=autofill_option_2)
+        st.button(example_prompt2, on_click=autofill_option, args=[example_prompt2])
+        format_example_prompt_button(example_prompt2)
 
     with prompt_button3:
-        st.button('People playing football with an orange lion', on_click=autofill_option_3)
-
+        st.button(example_prompt3, on_click=autofill_option, args=[example_prompt3])
+        format_example_prompt_button(example_prompt3)
 
     ## settings option ##
-    option = st.selectbox(r"$\textsf{\large Please select the setting}$", ['Office', 'Customer', 'Illustration'])
+    option = st.selectbox(
+        r"$\textsf{\large Please select the setting}$",
+        ["Office", "Customer", "Illustration"],
+    )
 
-    ## generate image button ## 
-    if st.button('Generate Image'):
+    ## generate image button ##
+    if st.button("Generate Image"):
         st.session_state.count += 4
-        with st_lottie_spinner(spinner_url, reverse=True, speed=1, loop=True, quality='high', height=130, width=130, key='spinner1'):
+        with open("image_counter.txt", "w") as f:
+            f.write(str(st.session_state.count))
+        with st_lottie_spinner(
+            spinner_url,
+            reverse=True,
+            speed=1,
+            loop=True,
+            quality="high",
+            height=130,
+            width=130,
+            key="spinner1",
+        ):
             # pass
 
-            if option == 'Office':
+            if option == "Office":
                 system_prompt = """
                                 Setting:
                                 diverse, happy, office setting, professional photography, high quality, colorful, energetic, orange elements, 
                                 smiling, playful, funny situation, sustainable, fair society, harmony, team spirit, working together
                                 Image Content:
                                 """
-            
-            elif option == 'Customer':
+
+            elif option == "Customer":
                 system_prompt = """
                                 Setting:
                                 happy, fun, diverse, action, enjoying, natural, snapshot, daily life, energetic, playful, harmony, freedom
                                 Image Content:
                                 """
 
-            elif option == 'Illustration':
+            elif option == "Illustration":
                 system_prompt = """
                                 Setting:
                                 flat design illustraton, minimalistic, simple geometric shapes, happy, fun, diverse, simple, smooth rounded edges,
@@ -118,7 +146,7 @@ with body:
                 cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, 
                 fused fingers, too many fingers, long neck, watermark, signature, brands, violence, weapons, blood, nudity
                 """
-            
+
             prompt = system_prompt + user_prompt
 
             success = False
@@ -129,8 +157,8 @@ with body:
                         number_of_images=4,
                         aspect_ratio="4:3",
                         safety_filter_level="block_some",
-                        person_generation="allow_adult", 
-                        negative_prompt=negative_prompt
+                        person_generation="allow_adult",
+                        negative_prompt=negative_prompt,
                     )
 
                 except ResourceExhausted:
@@ -150,26 +178,42 @@ with body:
                         image = Image.open(BytesIO(image_data))
                         images.append(image)
 
-                    with sub_body1: 
+                    with sub_body1:
                         img1, img2 = st.columns(2)
-                    
-                        with img1:
-                            st.image(images[0], caption='Image 1', use_column_width=True)
-                        
-                        with img2:
-                            st.image(images[1], caption='Image 2', use_column_width=True)
 
-                    with sub_body2: 
+                        with img1:
+                            st.image(
+                                images[0], caption="Image 1", use_column_width=True
+                            )
+
+                        with img2:
+                            st.image(
+                                images[1], caption="Image 2", use_column_width=True
+                            )
+
+                    with sub_body2:
                         img3, img4 = st.columns(2)
 
                         with img3:
-                            st.image(images[2], caption='Image 3', use_column_width=True)
+                            st.image(
+                                images[2], caption="Image 3", use_column_width=True
+                            )
 
                         with img4:
-                            st.image(images[3], caption='Image 4', use_column_width=True)
+                            st.image(
+                                images[3], caption="Image 4", use_column_width=True
+                            )
 
-                    st_lottie(confetti_url, reverse=True, speed=1, loop=False,
-                                           quality='high', height=200, width=200, key='confetti1')
+                    # st_lottie(
+                    #     confetti_url,
+                    #     reverse=True,
+                    #     speed=1,
+                    #     loop=False,
+                    #     quality="high",
+                    #     height=200,
+                    #     width=200,
+                    #     key="confetti1",
+                    # )
 
 
 with footer:
@@ -181,7 +225,5 @@ with footer:
             <p>Cost per generated image: 0,16€</p>
         </div>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
-
-

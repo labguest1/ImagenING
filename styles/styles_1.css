@@ -25,8 +25,9 @@
 
 /* Button design */
 button.st-emotion-cache-1vt4y43.ef3psqc13:nth-child(1) {
-    background-color: white;
-    color: #ff6200;
+    background-color: #ff6200;
+    color: white;
     border: 1px solid #ff6200;
+    width: 100%
 }
 

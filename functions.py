@@ -1,10 +1,22 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
-def autofill_option_1():
-        st.session_state.input_text = '2 people shaking hands'
-    
-def autofill_option_2():
-    st.session_state.input_text = 'A friendly orange lion shaking hands with people'
 
-def autofill_option_3():
-    st.session_state.input_text = 'People playing football with an orange lion'
+def autofill_option(text):
+    st.session_state.input_text = text
+
+
+def format_example_prompt_button(widget_label):
+    htmlstr = f"""
+        <script>
+            var elements = window.parent.document.querySelectorAll('button');
+            for (var i = 0; i < elements.length; ++i) {{ 
+                if (elements[i].innerText == '{widget_label}') {{ 
+                    elements[i].style.color = 'black';
+                    elements[i].style.background = 'transparent'
+                    elements[i].style.border='none'
+                }}
+            }}
+        </script>
+        """
+    components.html(f"{htmlstr}", height=0, width=0)
