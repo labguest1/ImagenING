@@ -82,6 +82,8 @@ with body:
 
     if re.search(r'(?i)\bhappy\b\s+\blion\b', user_prompt):  
         st.session_state.easter_egg = True
+    else: 
+        st.session_state.easter_egg = False
 
 
     ### prompt option buttons ##

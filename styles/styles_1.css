@@ -31,3 +31,8 @@ button.st-emotion-cache-1vt4y43.ef3psqc13:nth-child(1) {
     width: 100%
 }
 
+/* gif image design */
+div.stImage.st-emotion-cache-1kyxreq.e115fcil2 {
+    display: flex;
+    justify-content: center;
+}
