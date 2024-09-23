@@ -50,11 +50,11 @@ sub_body1 = st.container()
 sub_body2 = st.container()
 footer = st.container()
 
-if 'count' not in st.session_state:
+if "count" not in st.session_state:
     with open("image_counter.txt", "r") as f:
         st.session_state.count = int(f.read())
 
-if 'easter_egg' not in st.session_state:
+if "easter_egg" not in st.session_state:
     st.session_state.easter_egg = False
 
 
@@ -64,9 +64,9 @@ with header:
 
 
 ### animations ###
-path1 = "animations/spinner.json"
-with open(path1, "r") as file:
-    spinner_url = json.load(file)
+path = "animations/hourglass.json"
+with open(path, "r") as file:
+    hourglass_animation = json.load(file)
 
 
 ### main page body ###
@@ -75,16 +75,15 @@ with body:
         st.session_state.input_text = ""
 
     user_prompt = st.text_input(
-        r"$\textsf{\large Please enter your prompt}$",
+        r"$\textsf{\large 1. Please enter your prompt}$",
         key="input_text",
         placeholder="type here",
     )
 
-    if re.search(r'(?i)\bhappy\b\s+\blion\b', user_prompt):  
+    if re.search(r"(?i)\bhappy\b\s+\blion\b", user_prompt):
         st.session_state.easter_egg = True
-    else: 
+    else:
         st.session_state.easter_egg = False
-
 
     ### prompt option buttons ##
     prompt_button1, prompt_button2, prompt_button3 = st.columns(3)
@@ -101,8 +100,7 @@ with body:
         st.button(example_prompt3, on_click=autofill_option, args=[example_prompt3])
         format_example_prompt_button(example_prompt3)
 
-
-    ## easter egg ## 
+    ## easter egg ##
     lion_placeholder = st.empty()
 
     if st.session_state.easter_egg:
@@ -111,10 +109,9 @@ with body:
     else:
         lion_placeholder.markdown("")
 
-
     ## settings option ##
     option = st.selectbox(
-        r"$\textsf{\large Please select the setting}$",
+        r"$\textsf{\large 2. Please select the setting}$",
         ["Office", "Customer", "Illustration"],
     )
 
@@ -124,7 +121,7 @@ with body:
         with open("image_counter.txt", "w") as f:
             f.write(str(st.session_state.count))
         with st_lottie_spinner(
-            spinner_url,
+            hourglass_animation,
             reverse=True,
             speed=1,
             loop=True,
@@ -134,7 +131,7 @@ with body:
             key="spinner1",
         ):
             # pass
-    
+
             if option == "Office":
                 system_prompt = """
                                 Setting:
@@ -221,7 +218,7 @@ with body:
                             st.image(
                                 images[3], caption="Image 4", use_column_width=True
                             )
-                    
+
                     st.balloons()
 
 

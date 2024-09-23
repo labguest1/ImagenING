@@ -12,9 +12,15 @@ def format_example_prompt_button(widget_label):
             var elements = window.parent.document.querySelectorAll('button');
             for (var i = 0; i < elements.length; ++i) {{ 
                 if (elements[i].innerText == '{widget_label}') {{ 
-                    elements[i].style.color = 'black';
-                    elements[i].style.background = 'transparent'
-                    elements[i].style.border='none'
+                    elements[i].style.color = 'grey';
+                    elements[i].style.background = 'transparent';
+                    elements[i].style.border = 'dotted';
+                }}
+            }}
+            var elements = window.parent.document.querySelectorAll('p');
+            for (var i = 0; i < elements.length; ++i) {{ 
+                if (elements[i].innerText == '{widget_label}') {{ 
+                    elements[i].style.fontSize = '12px';
                 }}
             }}
         </script>

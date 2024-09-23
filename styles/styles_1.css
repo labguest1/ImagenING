@@ -36,3 +36,9 @@ div.stImage.st-emotion-cache-1kyxreq.e115fcil2 {
     display: flex;
     justify-content: center;
 }
+
+/* lottie animation position */
+iframe {
+    position: absolute;
+    left: 40%;
+}
