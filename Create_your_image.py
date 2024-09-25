@@ -85,7 +85,7 @@ with body:
     else:
         st.session_state.easter_egg = False
 
-    ### prompt option buttons ##
+    ## prompt option buttons ##
     prompt_button1, prompt_button2, prompt_button3 = st.columns(3)
 
     with prompt_button1:
@@ -117,9 +117,6 @@ with body:
 
     ## generate image button ##
     if st.button("Generate Image"):
-        st.session_state.count += 4
-        with open("image_counter.txt", "w") as f:
-            f.write(str(st.session_state.count))
         with st_lottie_spinner(
             hourglass_animation,
             reverse=True,
@@ -176,6 +173,10 @@ with body:
                         negative_prompt=negative_prompt,
                     )
 
+                    if not response or len(list(response)) == 0:
+                        st.markdown(":red[I'm sorry, I do not understand your prompt. Please try again :)]")
+                        break
+
                 except ResourceExhausted:
                     print("Resource is exhausted, trying again in 2 seconds")
                     time.sleep(2)
@@ -192,32 +193,40 @@ with body:
                         image_data = response.images[index]._image_bytes
                         image = Image.open(BytesIO(image_data))
                         images.append(image)
+                    
+                    st.session_state.count += int(len(images))
+                    with open("image_counter.txt", "w") as f:
+                        f.write(str(st.session_state.count))
 
                     with sub_body1:
                         img1, img2 = st.columns(2)
 
-                        with img1:
-                            st.image(
-                                images[0], caption="Image 1", use_column_width=True
-                            )
+                        if len(images) > 0:
+                            with img1:
+                                st.image(
+                                    images[0], caption="Image 1", use_column_width=True
+                                )
 
-                        with img2:
-                            st.image(
-                                images[1], caption="Image 2", use_column_width=True
-                            )
+                        if len(images) > 1:
+                            with img2:
+                                st.image(
+                                    images[1], caption="Image 2", use_column_width=True
+                                )
 
                     with sub_body2:
                         img3, img4 = st.columns(2)
 
-                        with img3:
-                            st.image(
-                                images[2], caption="Image 3", use_column_width=True
-                            )
+                        if len(images) > 2:
+                            with img3:
+                                st.image(
+                                    images[2], caption="Image 3", use_column_width=True
+                                )
 
-                        with img4:
-                            st.image(
-                                images[3], caption="Image 4", use_column_width=True
-                            )
+                        if len(images) > 3:
+                            with img4:
+                                st.image(
+                                    images[3], caption="Image 4", use_column_width=True
+                                )
 
                     st.balloons()
 
